@@ -1,0 +1,12 @@
+{
+  "name": "ai-clarity",
+  "version": "1.0.0",
+  "description": "AI Clarity - AI Concierge Service",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

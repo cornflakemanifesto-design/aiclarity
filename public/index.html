@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Clarity — We Remove the Fear From the Equation</title>
+    <meta name="description" content="AI Clarity helps solopreneurs and creative professionals navigate the world of AI with confidence.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600;700&family=Sora:wght@300;400;500;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Space+Grotesk:wght@300;400;500;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <style id="dynamic-styles"></style>
+    <style>
+        /* ===== BASE RESET ===== */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; font-size: 16px; }
+        body { overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+
+        /* ===== ADMIN PANEL STYLES ===== */
+        .admin-toggle {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            z-index: 9999;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #0a1628;
+            border: 2px solid #38bdf8;
+            color: #38bdf8;
+            font-size: 1.25rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+            opacity: 0.7;
+        }
+        .admin-toggle:hover { opacity: 1; transform: scale(1.05); }
+
+        .admin-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(10, 22, 40, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 10000;
+        }
+        .admin-overlay.open { display: flex; justify-content: flex-end; }
+
+        .admin-panel {
+            width: 520px;
+            max-width: 95vw;
+            height: 100vh;
+            background: #0f1a2e;
+            overflow-y: auto;
+            box-shadow: -8px 0 40px rgba(0,0,0,0.4);
+            color: #e2e8f0;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .admin-header {
+            position: sticky;
+            top: 0;
+            background: #0a1628;
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            z-index: 10;
+        }
+
+        .admin-header h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #38bdf8;
+        }
+
+        .admin-close {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.25rem;
+            transition: color 0.2s;
+        }
+        .admin-close:hover { color: white; }
+
+        .admin-body { padding: 1.5rem; }
+
+        .admin-tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 1.5rem;
+            background: rgba(255,255,255,0.04);
+            border-radius: 12px;
+            padding: 4px;
+        }
+
+        .admin-tab {
+            flex: 1;
+            padding: 0.65rem 0.75rem;
+            background: none;
+            border: none;
+            color: #64748b;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 9px;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        .admin-tab.active {
+            background: rgba(56, 189, 248, 0.12);
+            color: #38bdf8;
+        }
+        .admin-tab:hover:not(.active) { color: #94a3b8; }
+
+        .admin-section {
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+        .admin-section.active { display: block; }
+
+        .admin-section-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #38bdf8;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .admin-field {
+            margin-bottom: 1rem;
+        }
+
+        .admin-field label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #94a3b8;
+            margin-bottom: 0.35rem;
+        }
+
+        .admin-field input[type="text"],
+        .admin-field input[type="number"],
+        .admin-field input[type="password"],
+        .admin-field textarea,
+        .admin-field select {
+            width: 100%;
+            padding: 0.7rem 0.9rem;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9rem;
+            color: white;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .admin-field input:focus,
+        .admin-field textarea:focus,
+        .admin-field select:focus {
+            border-color: #38bdf8;
+        }
+        .admin-field textarea { resize: vertical; min-height: 70px; }
+        .admin-field select { cursor: pointer; }
+        .admin-field select option { background: #0f1a2e; }
+
+        .admin-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .admin-color-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .admin-color-row input[type="color"] {
+            width: 40px;
+            height: 36px;
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 8px;
+            background: none;
+            cursor: pointer;
+            padding: 2px;
+        }
+
+        .admin-color-row input[type="text"] { flex: 1; }
+
+        .admin-actions {
+            position: sticky;
+            bottom: 0;
+            background: #0a1628;
+            padding: 1rem 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .admin-btn {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .admin-btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+        .admin-btn-primary:hover { background: #3b82f6; }
+
+        .admin-btn-secondary {
+            background: rgba(255,255,255,0.06);
+            color: #94a3b8;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .admin-btn-secondary:hover { color: white; border-color: rgba(255,255,255,0.2); }
+
+        .admin-btn-danger {
+            background: rgba(239,68,68,0.1);
+            color: #ef4444;
+            border: 1px solid rgba(239,68,68,0.2);
+        }
+        .admin-btn-danger:hover { background: rgba(239,68,68,0.2); }
+
+        .admin-saved {
+            text-align: center;
+            padding: 0.5rem;
+            color: #10b981;
+            font-size: 0.85rem;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .admin-saved.show { opacity: 1; }
+
+        .admin-divider {
+            height: 1px;
+            background: rgba(255,255,255,0.06);
+            margin: 1.5rem 0;
+        }
+
+        /* Login overlay */
+        .admin-login {
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+        .admin-login h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+        .admin-login p {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-bottom: 1.5rem;
+        }
+        .admin-login input {
+            width: 100%;
+            max-width: 280px;
+            padding: 0.75rem 1rem;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 10px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95rem;
+            color: white;
+            text-align: center;
+            outline: none;
+            margin-bottom: 1rem;
+        }
+        .admin-login input:focus { border-color: #38bdf8; }
+        .admin-login .admin-btn { max-width: 280px; margin: 0 auto; display: block; }
+        .admin-login-error {
+            color: #ef4444;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        /* Tier editor cards */
+        .admin-tier-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 14px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+        }
+        .admin-tier-card h4 {
+            font-size: 0.9rem;
+            color: #38bdf8;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        /* Pain point / audience editor */
+        .admin-item-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .font-preview {
+            margin-top: 0.35rem;
+            padding: 0.5rem 0.75rem;
+            background: rgba(255,255,255,0.03);
+            border-radius: 8px;
+            font-size: 1rem;
+            color: #e2e8f0;
+        }
+
+        /* ===== MAIN SITE STYLES (dynamic via CSS vars) ===== */
+        :root {
+            --deep-navy: #0a1628;
+            --rich-blue: #1a3a5c;
+            --ocean-blue: #2563eb;
+            --sky-blue: #38bdf8;
+            --pale-blue: #e0f2fe;
+            --crystal: #f0f9ff;
+            --white: #ffffff;
+            --warm-gray: #94a3b8;
+            --light-gray: #e2e8f0;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --font-display: 'Playfair Display', Georgia, serif;
+            --font-body: 'DM Sans', -apple-system, sans-serif;
+        }
+
+        body { font-family: var(--font-body); color: var(--text-primary); background: var(--white); }
+
+        /* Nav */
+        nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 1.25rem 2rem; display: flex; justify-content: space-between; align-items: center; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        nav.scrolled { background: rgba(255,255,255,0.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); box-shadow: 0 1px 20px rgba(10,22,40,0.06); padding: 0.85rem 2rem; }
+        .nav-logo { font-family: var(--font-display); font-size: 1.5rem; font-weight: 600; color: var(--white); text-decoration: none; letter-spacing: -0.02em; transition: color 0.4s; }
+        nav.scrolled .nav-logo { color: var(--deep-navy); }
+        .nav-logo span { font-weight: 400; opacity: 0.7; }
+        .nav-links { display: flex; gap: 2.5rem; list-style: none; align-items: center; }
+        .nav-links a { font-size: 0.9rem; font-weight: 500; color: rgba(255,255,255,0.8); text-decoration: none; letter-spacing: 0.02em; transition: color 0.3s; }
+        nav.scrolled .nav-links a { color: var(--text-secondary); }
+        .nav-links a:hover { color: var(--white); }
+        nav.scrolled .nav-links a:hover { color: var(--ocean-blue); }
+        .nav-cta { padding: 0.6rem 1.5rem !important; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25); border-radius: 100px; transition: all 0.3s !important; }
+        nav.scrolled .nav-cta { background: var(--ocean-blue) !important; border-color: var(--ocean-blue) !important; color: white !important; }
+        .nav-cta:hover { background: rgba(255,255,255,0.25) !important; }
+        nav.scrolled .nav-cta:hover { background: var(--rich-blue) !important; }
+        .mobile-menu-btn { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 5px; }
+        .mobile-menu-btn span { width: 24px; height: 2px; background: white; transition: all 0.3s; }
+        nav.scrolled .mobile-menu-btn span { background: var(--deep-navy); }
+
+        /* Hero */
+        .hero { position: relative; min-height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; background: linear-gradient(165deg, var(--deep-navy) 0%, #0f2847 35%, var(--rich-blue) 65%, #1e5a8a 100%); overflow: hidden; }
+        .hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(ellipse 600px 400px at 20% 80%, rgba(56,189,248,0.08) 0%, transparent 70%), radial-gradient(ellipse 800px 600px at 80% 20%, rgba(37,99,235,0.06) 0%, transparent 70%), radial-gradient(ellipse 400px 300px at 60% 70%, rgba(56,189,248,0.05) 0%, transparent 70%); animation: caustics 8s ease-in-out infinite alternate; }
+        @keyframes caustics { 0% { opacity: 0.6; transform: scale(1); } 50% { opacity: 1; transform: scale(1.05); } 100% { opacity: 0.7; transform: scale(0.98); } }
+        .hero-particles { position: absolute; top: 0; left: 0; right: 0; bottom: 0; overflow: hidden; }
+        .particle { position: absolute; width: 4px; height: 4px; background: rgba(56,189,248,0.3); border-radius: 50%; animation: float-up linear infinite; }
+        @keyframes float-up { 0% { transform: translateY(100vh) scale(0); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { transform: translateY(-10vh) scale(1); opacity: 0; } }
+        .hero-content { position: relative; z-index: 2; max-width: 800px; padding: 2rem; }
+        .hero-badge { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1.25rem; background: rgba(56,189,248,0.1); border: 1px solid rgba(56,189,248,0.2); border-radius: 100px; font-size: 0.85rem; font-weight: 500; color: var(--sky-blue); margin-bottom: 2rem; opacity: 0; transform: translateY(20px); animation: fadeUp 0.8s 0.3s cubic-bezier(0.16,1,0.3,1) forwards; }
+        .hero-badge::before { content: ''; width: 6px; height: 6px; background: var(--sky-blue); border-radius: 50%; animation: pulse-dot 2s ease-in-out infinite; }
+        @keyframes pulse-dot { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.5); } }
+        .hero h1 { font-family: var(--font-display); font-size: clamp(2.8rem,6vw,4.5rem); font-weight: 600; color: var(--white); line-height: 1.15; letter-spacing: -0.02em; margin-bottom: 1.5rem; opacity: 0; transform: translateY(30px); animation: fadeUp 0.8s 0.5s cubic-bezier(0.16,1,0.3,1) forwards; }
+        .hero h1 em { font-style: italic; color: var(--sky-blue); }
+        .hero-sub { font-size: clamp(1.05rem,2vw,1.25rem); color: rgba(255,255,255,0.65); line-height: 1.7; max-width: 580px; margin: 0 auto 2.5rem; font-weight: 300; opacity: 0; transform: translateY(30px); animation: fadeUp 0.8s 0.7s cubic-bezier(0.16,1,0.3,1) forwards; }
+        .hero-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; opacity: 0; transform: translateY(30px); animation: fadeUp 0.8s 0.9s cubic-bezier(0.16,1,0.3,1) forwards; }
+        @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+        .btn-primary { display: inline-flex; align-items: center; gap: 0.5rem; padding: 1rem 2.25rem; background: var(--ocean-blue); color: white; font-family: var(--font-body); font-size: 1rem; font-weight: 600; border: none; border-radius: 100px; cursor: pointer; text-decoration: none; transition: all 0.3s cubic-bezier(0.16,1,0.3,1); box-shadow: 0 4px 20px rgba(37,99,235,0.3); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(37,99,235,0.4); background: #3b82f6; }
+        .btn-secondary { display: inline-flex; align-items: center; gap: 0.5rem; padding: 1rem 2.25rem; background: transparent; color: rgba(255,255,255,0.8); font-family: var(--font-body); font-size: 1rem; font-weight: 500; border: 1px solid rgba(255,255,255,0.2); border-radius: 100px; cursor: pointer; text-decoration: none; transition: all 0.3s; }
+        .btn-secondary:hover { border-color: rgba(255,255,255,0.5); color: white; background: rgba(255,255,255,0.05); }
+        .scroll-indicator { position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 0.5rem; opacity: 0; animation: fadeUp 0.8s 1.5s cubic-bezier(0.16,1,0.3,1) forwards; }
+        .scroll-indicator span { font-size: 0.75rem; color: rgba(255,255,255,0.35); letter-spacing: 0.15em; text-transform: uppercase; }
+        .scroll-line { width: 1px; height: 40px; background: linear-gradient(to bottom, rgba(56,189,248,0.5), transparent); animation: scrollPulse 2s ease-in-out infinite; }
+        @keyframes scrollPulse { 0%,100% { transform: scaleY(1); opacity: 0.5; } 50% { transform: scaleY(0.5); opacity: 1; } }
+
+        /* Sections */
+        section { padding: 7rem 2rem; }
+        .container { max-width: 1100px; margin: 0 auto; }
+        .section-label { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--ocean-blue); margin-bottom: 1rem; }
+        .section-title { font-family: var(--font-display); font-size: clamp(2rem,4vw,3rem); font-weight: 600; color: var(--text-primary); line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 1.25rem; }
+        .section-subtitle { font-size: 1.1rem; color: var(--text-secondary); line-height: 1.7; max-width: 600px; font-weight: 300; }
+
+        /* Problem */
+        .problem { background: var(--crystal); }
+        .problem-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; margin-top: 3rem; }
+        .problem-text p { font-size: 1.15rem; line-height: 1.85; color: var(--text-secondary); font-weight: 300; }
+        .problem-text p + p { margin-top: 1.5rem; }
+        .problem-text strong { color: var(--text-primary); font-weight: 600; }
+        .problem-visual { display: flex; flex-direction: column; gap: 1rem; }
+        .pain-point { padding: 1.25rem 1.5rem; background: var(--white); border-radius: 16px; border: 1px solid var(--light-gray); display: flex; align-items: center; gap: 1rem; transition: all 0.4s cubic-bezier(0.16,1,0.3,1); opacity: 0; transform: translateX(30px); }
+        .pain-point.visible { opacity: 1; transform: translateX(0); }
+        .pain-point:hover { transform: translateX(8px); box-shadow: 0 4px 20px rgba(10,22,40,0.06); }
+        .pain-point-icon { width: 44px; height: 44px; border-radius: 12px; background: var(--pale-blue); display: flex; align-items: center; justify-content: center; font-size: 1.25rem; flex-shrink: 0; }
+        .pain-point-text { font-size: 0.95rem; color: var(--text-secondary); line-height: 1.5; }
+
+        /* Solution */
+        .solution { background: var(--white); text-align: center; }
+        .solution-header { max-width: 700px; margin: 0 auto 4rem; }
+        .solution-header .section-subtitle { margin: 0 auto; }
+        .solution-narrative { max-width: 680px; margin: 0 auto 3rem; font-size: 1.2rem; line-height: 1.85; color: var(--text-secondary); font-weight: 300; }
+        .solution-narrative em { color: var(--ocean-blue); font-style: italic; font-family: var(--font-display); }
+        .solution-features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-top: 3rem; }
+        .feature-card { padding: 2.5rem 2rem; background: var(--crystal); border-radius: 20px; text-align: left; transition: all 0.4s cubic-bezier(0.16,1,0.3,1); border: 1px solid transparent; }
+        .feature-card:hover { transform: translateY(-4px); border-color: var(--pale-blue); box-shadow: 0 12px 40px rgba(10,22,40,0.06); }
+        .feature-icon { width: 52px; height: 52px; border-radius: 14px; background: linear-gradient(135deg, var(--ocean-blue), var(--sky-blue)); display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; font-size: 1.4rem; }
+        .feature-card h3 { font-family: var(--font-display); font-size: 1.25rem; font-weight: 600; margin-bottom: 0.75rem; color: var(--text-primary); }
+        .feature-card p { font-size: 0.95rem; line-height: 1.65; color: var(--text-secondary); font-weight: 300; }
+
+        /* Services */
+        .services { background: linear-gradient(180deg, var(--deep-navy) 0%, #0f2847 100%); color: white; text-align: center; }
+        .services .section-label { color: var(--sky-blue); }
+        .services .section-title { color: white; }
+        .services .section-subtitle { color: rgba(255,255,255,0.6); margin: 0 auto; }
+        .tiers-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 4rem; }
+        .tier-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 2.5rem 2rem; text-align: left; position: relative; transition: all 0.4s cubic-bezier(0.16,1,0.3,1); overflow: hidden; }
+        .tier-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, transparent, var(--sky-blue), transparent); opacity: 0; transition: opacity 0.4s; }
+        .tier-card:hover { background: rgba(255,255,255,0.07); border-color: rgba(56,189,248,0.2); transform: translateY(-4px); }
+        .tier-card:hover::before { opacity: 1; }
+        .tier-card.featured { background: rgba(56,189,248,0.08); border-color: rgba(56,189,248,0.15); }
+        .tier-card.featured::before { opacity: 1; }
+        .tier-depth { font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--sky-blue); margin-bottom: 1rem; font-weight: 600; }
+        .tier-name { font-family: var(--font-display); font-size: 1.75rem; font-weight: 600; color: white; margin-bottom: 0.75rem; }
+        .tier-desc { font-size: 0.95rem; line-height: 1.65; color: rgba(255,255,255,0.55); margin-bottom: 2rem; font-weight: 300; min-height: 80px; }
+        .tier-price { font-family: var(--font-display); font-size: 2.25rem; font-weight: 700; color: white; margin-bottom: 0.25rem; }
+        .tier-price-note { font-size: 0.85rem; color: rgba(255,255,255,0.4); margin-bottom: 2rem; }
+        .tier-features { list-style: none; margin-bottom: 2rem; }
+        .tier-features li { padding: 0.5rem 0; font-size: 0.9rem; color: rgba(255,255,255,0.65); display: flex; align-items: flex-start; gap: 0.75rem; }
+        .tier-features li::before { content: '→'; color: var(--sky-blue); font-weight: 600; flex-shrink: 0; }
+        .tier-btn { display: block; width: 100%; padding: 0.9rem; border-radius: 100px; font-family: var(--font-body); font-size: 0.95rem; font-weight: 600; cursor: pointer; text-decoration: none; text-align: center; transition: all 0.3s; background: transparent; border: 1px solid rgba(255,255,255,0.15); color: white; }
+        .tier-btn:hover { border-color: var(--sky-blue); background: rgba(56,189,248,0.1); }
+        .tier-card.featured .tier-btn { background: var(--ocean-blue); border-color: var(--ocean-blue); }
+        .tier-card.featured .tier-btn:hover { background: #3b82f6; }
+
+        /* Audience */
+        .audience { background: var(--white); text-align: center; }
+        .audience-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-top: 3rem; }
+        .audience-card { padding: 2rem 1.5rem; background: var(--crystal); border-radius: 20px; text-align: center; transition: all 0.4s cubic-bezier(0.16,1,0.3,1); border: 1px solid transparent; }
+        .audience-card:hover { transform: translateY(-4px); border-color: var(--pale-blue); box-shadow: 0 8px 30px rgba(10,22,40,0.06); }
+        .audience-icon { font-size: 2rem; margin-bottom: 1rem; }
+        .audience-card h3 { font-family: var(--font-display); font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-primary); }
+        .audience-card p { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; font-weight: 300; }
+
+        /* Testimonials */
+        .testimonials { background: var(--crystal); text-align: center; }
+        .testimonials-placeholder { max-width: 500px; margin: 3rem auto 0; padding: 3rem; border: 2px dashed var(--light-gray); border-radius: 20px; color: var(--warm-gray); font-style: italic; }
+
+        /* Booking */
+        .booking { background: linear-gradient(165deg, var(--deep-navy) 0%, var(--rich-blue) 100%); text-align: center; position: relative; overflow: hidden; }
+        .booking::before { content: ''; position: absolute; top: -50%; left: -50%; right: -50%; bottom: -50%; background: radial-gradient(ellipse at center, rgba(56,189,248,0.05) 0%, transparent 60%); animation: caustics 10s ease-in-out infinite alternate; }
+        .booking-content { position: relative; z-index: 2; }
+        .booking .section-label { color: var(--sky-blue); }
+        .booking .section-title { color: white; }
+        .booking .section-subtitle { color: rgba(255,255,255,0.6); margin: 0 auto; }
+        .booking-form { max-width: 500px; margin: 0 auto; display: flex; flex-direction: column; gap: 1rem; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .booking-form input, .booking-form textarea, .booking-form select { width: 100%; padding: 1rem 1.25rem; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 14px; font-family: var(--font-body); font-size: 0.95rem; color: white; transition: all 0.3s; outline: none; }
+        .booking-form input::placeholder, .booking-form textarea::placeholder { color: rgba(255,255,255,0.35); }
+        .booking-form select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='rgba(255,255,255,0.4)' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 1rem center; cursor: pointer; color: rgba(255,255,255,0.35); }
+        .booking-form select.selected { color: white; }
+        .booking-form select option { background: var(--deep-navy); color: white; }
+        .booking-form input:focus, .booking-form textarea:focus, .booking-form select:focus { border-color: var(--sky-blue); background: rgba(255,255,255,0.09); }
+        .booking-form textarea { resize: vertical; min-height: 100px; }
+        .submit-btn { padding: 1.1rem 2.5rem; background: var(--ocean-blue); color: white; font-family: var(--font-body); font-size: 1rem; font-weight: 600; border: none; border-radius: 100px; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 20px rgba(37,99,235,0.3); margin-top: 0.5rem; }
+        .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(37,99,235,0.4); background: #3b82f6; }
+        .booking-note { margin-top: 1.5rem; font-size: 0.85rem; color: rgba(255,255,255,0.35); }
+
+        /* Footer */
+        footer { padding: 3rem 2rem; background: var(--deep-navy); border-top: 1px solid rgba(255,255,255,0.05); text-align: center; }
+        .footer-logo { font-family: var(--font-display); font-size: 1.25rem; font-weight: 600; color: white; margin-bottom: 0.75rem; }
+        .footer-logo span { font-weight: 400; opacity: 0.6; }
+        .footer-tagline { font-size: 0.9rem; color: rgba(255,255,255,0.35); margin-bottom: 1.5rem; font-weight: 300; }
+        .footer-links { display: flex; justify-content: center; gap: 2rem; margin-bottom: 2rem; }
+        .footer-links a { font-size: 0.85rem; color: rgba(255,255,255,0.4); text-decoration: none; transition: color 0.3s; }
+        .footer-links a:hover { color: var(--sky-blue); }
+        .footer-copy { font-size: 0.8rem; color: rgba(255,255,255,0.2); }
+
+        /* Animations */
+        .fade-in { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.16,1,0.3,1); }
+        .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+        /* Responsive */
+        @media (max-width: 960px) {
+            .tiers-grid, .solution-features { grid-template-columns: 1fr; max-width: 450px; margin-left: auto; margin-right: auto; }
+            .problem-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+            .audience-grid { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 768px) {
+            section { padding: 5rem 1.5rem; }
+            .nav-links { display: none; }
+            .mobile-menu-btn { display: flex; }
+            .form-row { grid-template-columns: 1fr; }
+            .audience-grid { grid-template-columns: 1fr; max-width: 350px; margin-left: auto; margin-right: auto; }
+            .hero-actions { flex-direction: column; align-items: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Nav -->
+    <nav id="navbar">
+        <a href="#" class="nav-logo">AI <span>Clarity</span></a>
+        <ul class="nav-links">
+            <li><a href="#problem">The Challenge</a></li>
+            <li><a href="#solution">How We Help</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#audience">Who We Serve</a></li>
+            <li><a href="#booking" class="nav-cta">Book a Session</a></li>
+        </ul>
+        <button class="mobile-menu-btn" aria-label="Menu"><span></span><span></span><span></span></button>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero" id="hero">
+        <div class="hero-particles" id="particles"></div>
+        <div class="hero-content">
+            <div class="hero-badge" id="site-hero-badge">Your AI Journey Starts Here</div>
+            <h1 id="site-hero-title">We Remove the <em>Fear</em> From the Equation</h1>
+            <p class="hero-sub" id="site-hero-sub">You know AI is the future. You've seen what it can do. But every time you try to take that first step, it feels overwhelming. We're here to change that.</p>
+            <div class="hero-actions">
+                <a href="#booking" class="btn-primary" id="site-hero-cta">Start With a Conversation <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+                <a href="#services" class="btn-secondary">See How It Works</a>
+            </div>
+        </div>
+        <div class="scroll-indicator"><span>Scroll</span><div class="scroll-line"></div></div>
+    </section>
+
+    <!-- Problem -->
+    <section class="problem" id="problem">
+        <div class="container">
+            <div class="fade-in">
+                <div class="section-label" id="site-problem-label">The Challenge</div>
+                <div class="section-title" id="site-problem-title">AI Feels Like a Wall,<br>Not a Door</div>
+            </div>
+            <div class="problem-grid">
+                <div class="problem-text fade-in" id="site-problem-text">
+                    <p>Every day there's a new tool, a new platform, a new headline about how AI is changing everything. And every day, the gap between <strong>knowing you should be using AI</strong> and <strong>actually using it</strong> gets wider.</p>
+                    <p>It's not that you're behind. It's that nobody's showing you where to start. The tutorials assume too much. The tools feel impersonal. And the fear of doing it wrong keeps you stuck.</p>
+                    <p><strong>That's where we come in.</strong></p>
+                </div>
+                <div class="problem-visual" id="site-pain-points">
+                    <div class="pain-point"><div class="pain-point-icon">🌊</div><div class="pain-point-text">"There are so many AI tools — I don't even know which ones are relevant to me."</div></div>
+                    <div class="pain-point"><div class="pain-point-icon">😶‍🌫️</div><div class="pain-point-text">"I've tried ChatGPT a few times but I know I'm barely scratching the surface."</div></div>
+                    <div class="pain-point"><div class="pain-point-icon">⏳</div><div class="pain-point-text">"I don't have time to figure this all out on my own through trial and error."</div></div>
+                    <div class="pain-point"><div class="pain-point-icon">🎯</div><div class="pain-point-text">"I want to use AI in my work, but I need someone to show me how — for my specific situation."</div></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solution -->
+    <section class="solution" id="solution">
+        <div class="container">
+            <div class="solution-header fade-in">
+                <div class="section-label" id="site-solution-label">Our Approach</div>
+                <div class="section-title" id="site-solution-title">We Show You the Shallow End<br>So You Can See How Refreshing It Is</div>
+                <p class="section-subtitle" id="site-solution-subtitle">AI Clarity is your personal guide to the world of artificial intelligence. No jargon. No overwhelm. Just clear, human support at whatever pace feels right for you.</p>
+            </div>
+            <p class="solution-narrative fade-in" id="site-solution-narrative">Think of us as the friend who already figured it out and is excited to show you. We meet you <em>exactly</em> where you are — whether that's your very first question or an ambitious project you've been dreaming about. When you're ready, we dive deep and make all of those ideas you thought were impossible, <em>possible</em>.</p>
+            <div class="solution-features" id="site-features"></div>
+        </div>
+    </section>
+
+    <!-- Services -->
+    <section class="services" id="services">
+        <div class="container">
+            <div class="fade-in">
+                <div class="section-label" id="site-services-label">Services</div>
+                <div class="section-title" id="site-services-title" style="color:white">Choose Your Depth</div>
+                <p class="section-subtitle" id="site-services-subtitle" style="color:rgba(255,255,255,0.6);margin:0 auto">Whether you want to test the waters or go all-in, there's a way to work with us that fits.</p>
+            </div>
+            <div class="tiers-grid" id="site-tiers"></div>
+        </div>
+    </section>
+
+    <!-- Audience -->
+    <section class="audience" id="audience">
+        <div class="container">
+            <div class="fade-in">
+                <div class="section-label" id="site-audience-label">Who We Serve</div>
+                <div class="section-title" id="site-audience-title">Built for People Who Build Things</div>
+                <p class="section-subtitle" id="site-audience-subtitle" style="margin:0 auto">If you're a one-person show or a small creative team, and AI feels like the missing piece — you're in the right place.</p>
+            </div>
+            <div class="audience-grid" id="site-audience-grid"></div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials" id="testimonials">
+        <div class="container">
+            <div class="fade-in">
+                <div class="section-label">Testimonials</div>
+                <div class="section-title">What Our Clients Say</div>
+            </div>
+            <div class="testimonials-placeholder fade-in" id="site-testimonials-placeholder">
+                <p>This space is reserved for the stories of people just like you who took the first step. Your story could be here next.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Booking -->
+    <section class="booking" id="booking">
+        <div class="container">
+            <div class="booking-content">
+                <div class="fade-in">
+                    <div class="section-label" id="site-booking-label">Get Started</div>
+                    <div class="section-title" id="site-booking-title" style="color:white">Ready to See Things Clearly?</div>
+                    <p class="section-subtitle" id="site-booking-subtitle" style="color:rgba(255,255,255,0.6);margin:0 auto 2.5rem">Take the first step. Tell us a little about yourself and what you're curious about, and we'll find the right way to help you move forward.</p>
+                </div>
+                <form class="booking-form fade-in" onsubmit="handleSubmit(event)">
+                    <div class="form-row">
+                        <input type="text" name="name" placeholder="Your name" required>
+                        <input type="email" name="email" placeholder="Your email" required>
+                    </div>
+                    <select name="interest" required onchange="this.classList.toggle('selected', this.value !== '')">
+                        <option value="">What are you interested in?</option>
+                        <option value="wade-in">Wade In — Consultation ($175)</option>
+                        <option value="swim-lessons">Swim Lessons — Guided Package ($800–$1,100)</option>
+                        <option value="deep-dive">Deep Dive — Monthly Partnership ($2,000/mo)</option>
+                        <option value="not-sure">Not sure yet — just curious</option>
+                    </select>
+                    <textarea name="message" placeholder="Tell us a little about what you do and what you're hoping AI can help with..." rows="4"></textarea>
+                    <button type="submit" class="submit-btn" id="site-booking-btn">Send Message</button>
+                </form>
+                <p class="booking-note fade-in" id="site-booking-note">We'll get back to you within 24 hours. No pressure, no jargon — just a conversation.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-logo">AI <span>Clarity</span></div>
+        <p class="footer-tagline" id="site-footer-tagline">Removing the fear from the equation.</p>
+        <div class="footer-links">
+            <a href="#services">Services</a>
+            <a href="#audience">Who We Serve</a>
+            <a href="#booking">Contact</a>
+        </div>
+        <p class="footer-copy">&copy; 2026 AI Clarity. All rights reserved.</p>
+    </footer>
+
+    <!-- Admin Toggle -->
+    <button class="admin-toggle" id="adminToggle" title="Admin Panel">⚙</button>
+
+    <!-- Admin Overlay -->
+    <div class="admin-overlay" id="adminOverlay">
+        <div class="admin-panel">
+            <div class="admin-header">
+                <h2>⚙ AI Clarity — Admin</h2>
+                <button class="admin-close" id="adminClose">&times;</button>
+            </div>
+
+            <!-- Login Gate -->
+            <div id="adminLogin" class="admin-login">
+                <h3>Admin Access</h3>
+                <p>Enter your password to manage site content.</p>
+                <input type="password" id="adminPassword" placeholder="Password" onkeydown="if(event.key==='Enter')attemptLogin()">
+                <button class="admin-btn admin-btn-primary" onclick="attemptLogin()" style="width:100%;max-width:280px">Unlock</button>
+                <div class="admin-login-error" id="loginError">Incorrect password. Try again.</div>
+            </div>
+
+            <!-- Admin Content (hidden until login) -->
+            <div id="adminContent" style="display:none">
+                <div class="admin-tabs">
+                    <button class="admin-tab active" data-tab="content">Content</button>
+                    <button class="admin-tab" data-tab="tiers">Services</button>
+                    <button class="admin-tab" data-tab="design">Design</button>
+                    <button class="admin-tab" data-tab="audience">Audience</button>
+                </div>
+                <div class="admin-body" id="adminBody"></div>
+                <div class="admin-saved" id="adminSaved">✓ Changes saved & applied</div>
+                <div class="admin-actions">
+                    <button class="admin-btn admin-btn-primary" onclick="saveAll()">Save Changes</button>
+                    <button class="admin-btn admin-btn-secondary" onclick="previewChanges()">Preview</button>
+                    <button class="admin-btn admin-btn-danger" onclick="resetAll()">Reset</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // ============================================================
+    // DEFAULT CONTENT DATA
+    // ============================================================
+    const DEFAULTS = {
+        settings: {
+            adminPassword: 'aiclarity2026',
+            fontDisplay: "'Playfair Display', Georgia, serif",
+            fontBody: "'DM Sans', -apple-system, sans-serif",
+            colorPrimary: '#2563eb',
+            colorAccent: '#38bdf8',
+            colorNavy: '#0a1628',
+            colorText: '#0f172a',
+            colorTextSecondary: '#475569',
+        },
+        hero: {
+            badge: 'Your AI Journey Starts Here',
+            title: 'We Remove the <em>Fear</em> From the Equation',
+            subtitle: "You know AI is the future. You've seen what it can do. But every time you try to take that first step, it feels overwhelming. We're here to change that.",
+            cta: 'Start With a Conversation',
+        },
+        problem: {
+            label: 'The Challenge',
+            title: 'AI Feels Like a Wall,<br>Not a Door',
+            text: `<p>Every day there's a new tool, a new platform, a new headline about how AI is changing everything. And every day, the gap between <strong>knowing you should be using AI</strong> and <strong>actually using it</strong> gets wider.</p><p>It's not that you're behind. It's that nobody's showing you where to start. The tutorials assume too much. The tools feel impersonal. And the fear of doing it wrong keeps you stuck.</p><p><strong>That's where we come in.</strong></p>`,
+            painPoints: [
+                { icon: '🌊', text: '"There are so many AI tools — I don\'t even know which ones are relevant to me."' },
+                { icon: '😶‍🌫️', text: '"I\'ve tried ChatGPT a few times but I know I\'m barely scratching the surface."' },
+                { icon: '⏳', text: '"I don\'t have time to figure this all out on my own through trial and error."' },
+                { icon: '🎯', text: '"I want to use AI in my work, but I need someone to show me how — for my specific situation."' },
+            ]
+        },
+        solution: {
+            label: 'Our Approach',
+            title: 'We Show You the Shallow End<br>So You Can See How Refreshing It Is',
+            subtitle: 'AI Clarity is your personal guide to the world of artificial intelligence. No jargon. No overwhelm. Just clear, human support at whatever pace feels right for you.',
+            narrative: 'Think of us as the friend who already figured it out and is excited to show you. We meet you <em>exactly</em> where you are — whether that\'s your very first question or an ambitious project you\'ve been dreaming about. When you\'re ready, we dive deep and make all of those ideas you thought were impossible, <em>possible</em>.',
+            features: [
+                { icon: '🧭', title: 'Personalized Guidance', desc: "Every recommendation is tailored to your work, your goals, and your comfort level. No cookie-cutter advice — just clarity that fits your world." },
+                { icon: '🤝', title: 'Human-First Approach', desc: "We speak your language, not tech jargon. AI should feel empowering, not intimidating — and that starts with how we talk about it." },
+                { icon: '🔮', title: 'All-Inclusive Expertise', desc: "From cloud platforms to local models, from image generation to workflow automation — we know the landscape so you don't have to map it alone." },
+            ]
+        },
+        services: {
+            label: 'Services',
+            title: 'Choose Your Depth',
+            subtitle: "Whether you want to test the waters or go all-in, there's a way to work with us that fits.",
+            tiers: [
+                {
+                    depth: 'Ankle Deep', name: 'Wade In',
+                    desc: "A one-on-one consultation to map out your AI landscape. We learn about your work, identify the biggest opportunities, and give you a clear action plan.",
+                    price: '$175', priceNote: '90-minute session', featured: false, btnText: 'Book a Consultation',
+                    features: ['Personalized AI assessment', 'Tool & platform recommendations', 'Custom action plan to take with you', 'Follow-up session available']
+                },
+                {
+                    depth: 'Waist Deep', name: 'Swim Lessons',
+                    desc: "Hands-on guidance over multiple sessions. We don't just tell you what to use — we get you set up, trained, and confident in your new AI-powered workflow.",
+                    price: '$800 – $1,100', priceNote: '4–6 sessions over 2–4 weeks', featured: true, btnText: 'Get Started',
+                    features: ['Everything in Wade In', 'Hands-on tool setup & configuration', 'Workflow integration & training', 'Prompt crafting for your use cases', 'Ongoing support between sessions']
+                },
+                {
+                    depth: 'All In', name: 'Deep Dive',
+                    desc: "A true partnership. We're embedded in your work, building custom solutions, tackling ambitious projects, and transforming how your business operates with AI.",
+                    price: '$2,000', priceNote: 'per month · ongoing retainer', featured: false, btnText: "Let's Talk",
+                    features: ['Everything in Swim Lessons', 'Custom AI solution development', 'Priority access & ongoing sessions', 'Business process transformation', 'Your dedicated AI partner']
+                }
+            ]
+        },
+        audience: {
+            label: 'Who We Serve',
+            title: 'Built for People Who Build Things',
+            subtitle: "If you're a one-person show or a small creative team, and AI feels like the missing piece — you're in the right place.",
+            cards: [
+                { icon: '📸', title: 'Photographers &\nVideographers', desc: 'AI-powered editing, generation, and workflow automation' },
+                { icon: '✍️', title: 'Writers &\nContent Creators', desc: 'From ideation to production at speeds you didn\'t think possible' },
+                { icon: '🎨', title: 'Designers &\nArtists', desc: 'New creative tools that expand your vision, not replace it' },
+                { icon: '💼', title: 'Solopreneurs &\nSmall Business', desc: 'Do more with less — automate, create, and grow smarter' },
+            ]
+        },
+        booking: {
+            label: 'Get Started',
+            title: 'Ready to See Things Clearly?',
+            subtitle: "Take the first step. Tell us a little about yourself and what you're curious about, and we'll find the right way to help you move forward.",
+            btnText: 'Send Message',
+            note: "We'll get back to you within 24 hours. No pressure, no jargon — just a conversation.",
+        },
+        footer: {
+            tagline: 'Removing the fear from the equation.',
+        }
+    };
+
+    // ============================================================
+    // STATE MANAGEMENT
+    // ============================================================
+    let state = {};
+
+    async function loadState() {
+        try {
+            const res = await fetch('/api/content');
+            const saved = await res.json();
+            state = saved ? saved : JSON.parse(JSON.stringify(DEFAULTS));
+        } catch(e) {
+            state = JSON.parse(JSON.stringify(DEFAULTS));
+        }
+    }
+
+    async function saveState() {
+        try {
+            await fetch('/api/content', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(state)
+            });
+        } catch(e) {
+            console.error('Failed to save:', e);
+        }
+    }
+
+    // ============================================================
+    // FONT OPTIONS
+    // ============================================================
+    const FONT_OPTIONS = {
+        display: [
+            { label: 'Playfair Display', value: "'Playfair Display', Georgia, serif" },
+            { label: 'Cormorant Garamond', value: "'Cormorant Garamond', Georgia, serif" },
+            { label: 'Libre Baskerville', value: "'Libre Baskerville', Georgia, serif" },
+            { label: 'Crimson Pro', value: "'Crimson Pro', Georgia, serif" },
+            { label: 'Sora', value: "'Sora', sans-serif" },
+            { label: 'Outfit', value: "'Outfit', sans-serif" },
+        ],
+        body: [
+            { label: 'DM Sans', value: "'DM Sans', -apple-system, sans-serif" },
+            { label: 'Outfit', value: "'Outfit', sans-serif" },
+            { label: 'Sora', value: "'Sora', sans-serif" },
+            { label: 'Space Grotesk', value: "'Space Grotesk', sans-serif" },
+            { label: 'Crimson Pro', value: "'Crimson Pro', serif" },
+        ]
+    };
+
+    // ============================================================
+    // RENDER SITE CONTENT
+    // ============================================================
+    function renderSite() {
+        const s = state;
+
+        // CSS Variables
+        document.documentElement.style.setProperty('--font-display', s.settings.fontDisplay);
+        document.documentElement.style.setProperty('--font-body', s.settings.fontBody);
+        document.documentElement.style.setProperty('--ocean-blue', s.settings.colorPrimary);
+        document.documentElement.style.setProperty('--sky-blue', s.settings.colorAccent);
+        document.documentElement.style.setProperty('--deep-navy', s.settings.colorNavy);
+        document.documentElement.style.setProperty('--text-primary', s.settings.colorText);
+        document.documentElement.style.setProperty('--text-secondary', s.settings.colorTextSecondary);
+
+        // Hero
+        document.getElementById('site-hero-badge').textContent = s.hero.badge;
+        document.getElementById('site-hero-title').innerHTML = s.hero.title;
+        document.getElementById('site-hero-sub').textContent = s.hero.subtitle;
+        const ctaEl = document.getElementById('site-hero-cta');
+        ctaEl.innerHTML = s.hero.cta + ' <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
+
+        // Problem
+        document.getElementById('site-problem-label').textContent = s.problem.label;
+        document.getElementById('site-problem-title').innerHTML = s.problem.title;
+        document.getElementById('site-problem-text').innerHTML = s.problem.text;
+        const ppContainer = document.getElementById('site-pain-points');
+        ppContainer.innerHTML = s.problem.painPoints.map(pp => `
+            <div class="pain-point"><div class="pain-point-icon">${pp.icon}</div><div class="pain-point-text">${pp.text}</div></div>
+        `).join('');
+
+        // Solution
+        document.getElementById('site-solution-label').textContent = s.solution.label;
+        document.getElementById('site-solution-title').innerHTML = s.solution.title;
+        document.getElementById('site-solution-subtitle').textContent = s.solution.subtitle;
+        document.getElementById('site-solution-narrative').innerHTML = s.solution.narrative;
+        const featContainer = document.getElementById('site-features');
+        featContainer.innerHTML = s.solution.features.map(f => `
+            <div class="feature-card fade-in"><div class="feature-icon">${f.icon}</div><h3>${f.title}</h3><p>${f.desc}</p></div>
+        `).join('');
+
+        // Services
+        document.getElementById('site-services-label').textContent = s.services.label;
+        document.getElementById('site-services-title').innerHTML = s.services.title;
+        document.getElementById('site-services-subtitle').textContent = s.services.subtitle;
+        const tiersContainer = document.getElementById('site-tiers');
+        tiersContainer.innerHTML = s.services.tiers.map(t => `
+            <div class="tier-card fade-in ${t.featured ? 'featured' : ''}">
+                <div class="tier-depth">${t.depth}</div>
+                <div class="tier-name">${t.name}</div>
+                <p class="tier-desc">${t.desc}</p>
+                <div class="tier-price">${t.price}</div>
+                <div class="tier-price-note">${t.priceNote}</div>
+                <ul class="tier-features">${t.features.map(f => `<li>${f}</li>`).join('')}</ul>
+                <a href="#booking" class="tier-btn">${t.btnText}</a>
+            </div>
+        `).join('');
+
+        // Audience
+        document.getElementById('site-audience-label').textContent = s.audience.label;
+        document.getElementById('site-audience-title').innerHTML = s.audience.title;
+        document.getElementById('site-audience-subtitle').textContent = s.audience.subtitle;
+        const audContainer = document.getElementById('site-audience-grid');
+        audContainer.innerHTML = s.audience.cards.map(c => `
+            <div class="audience-card fade-in"><div class="audience-icon">${c.icon}</div><h3>${c.title.replace(/\n/g, '<br>')}</h3><p>${c.desc}</p></div>
+        `).join('');
+
+        // Booking
+        document.getElementById('site-booking-label').textContent = s.booking.label;
+        document.getElementById('site-booking-title').innerHTML = s.booking.title;
+        document.getElementById('site-booking-subtitle').textContent = s.booking.subtitle;
+        document.getElementById('site-booking-btn').textContent = s.booking.btnText;
+        document.getElementById('site-booking-note').textContent = s.booking.note;
+
+        // Footer
+        document.getElementById('site-footer-tagline').textContent = s.footer.tagline;
+
+        // Re-init scroll observers
+        initObservers();
+    }
+
+    // ============================================================
+    // ADMIN PANEL RENDERING
+    // ============================================================
+    let currentTab = 'content';
+
+    function renderAdminTab(tab) {
+        currentTab = tab;
+        const body = document.getElementById('adminBody');
+        const s = state;
+
+        document.querySelectorAll('.admin-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+
+        if (tab === 'content') {
+            body.innerHTML = `
+                <div class="admin-section active">
+                    <div class="admin-section-title">Hero Section</div>
+                    <div class="admin-field">
+                        <label>Badge Text</label>
+                        <input type="text" data-path="hero.badge" value="${esc(s.hero.badge)}">
+                    </div>
+                    <div class="admin-field">
+                        <label>Headline (use &lt;em&gt; for accent color)</label>
+                        <input type="text" data-path="hero.title" value="${esc(s.hero.title)}">
+                    </div>
+                    <div class="admin-field">
+                        <label>Subtitle</label>
+                        <textarea data-path="hero.subtitle" rows="3">${esc(s.hero.subtitle)}</textarea>
+                    </div>
+                    <div class="admin-field">
+                        <label>Button Text</label>
+                        <input type="text" data-path="hero.cta" value="${esc(s.hero.cta)}">
+                    </div>
+
+                    <div class="admin-divider"></div>
+                    <div class="admin-section-title">Problem Section</div>
+                    <div class="admin-field">
+                        <label>Section Label</label>
+                        <input type="text" data-path="problem.label" value="${esc(s.problem.label)}">
+                    </div>
+                    <div class="admin-field">
+                        <label>Section Title (use &lt;br&gt; for line breaks)</label>
+                        <input type="text" data-path="problem.title" value="${esc(s.problem.title)}">
+                    </div>
+                    <div class="admin-field">
+                        <label>Body Text (HTML supported)</label>
+                        <textarea data-path="problem.text" rows="6">${esc(s.problem.text)}</textarea>
+                    </div>
+
+                    <div class="admin-section-title" style="margin-top:1rem">Pain Points</div>
+                    ${s.problem.painPoints.map((pp, i) => `
+                        <div class="admin-item-card">
+                            <div class="admin-row">
+                                <div class="admin-field"><label>Icon</label><input type="text" data-path="problem.painPoints.${i}.icon" value="${esc(pp.icon)}"></div>
+                                <div class="admin-field"><label>Text</label><input type="text" data-path="problem.painPoints.${i}.text" value="${esc(pp.text)}"></div>
+                            </div>
+                        </div>
+                    `).join('')}
+
+                    <div class="admin-divider"></div>
+                    <div class="admin-section-title">Solution Section</div>
+                    <div class="admin-field">
+                        <label>Section Label</label>
+                        <input type="text" data-path="solution.label" value="${esc(s.solution.label)}">
+                    </div>
+                    <div class="admin-field">
+                        <label>Section Title</label>
+                        <input type="text" data-path="solution.title" value="${esc(s.solution.title)}">
+                    </div>
+                    <div class="admin-field">
+                        <label>Subtitle</label>
+                        <textarea data-path="solution.subtitle" rows="2">${esc(s.solution.subtitle)}</textarea>
+                    </div>
+                    <div class="admin-field">
+                        <label>Narrative (use &lt;em&gt; for accents)</label>
+                        <textarea data-path="solution.narrative" rows="4">${esc(s.solution.narrative)}</textarea>
+                    </div>
+
+                    <div class="admin-section-title" style="margin-top:1rem">Feature Cards</div>
+                    ${s.solution.features.map((f, i) => `
+                        <div class="admin-item-card">
+                            <div class="admin-row">
+                                <div class="admin-field"><label>Icon</label><input type="text" data-path="solution.features.${i}.icon" value="${esc(f.icon)}"></div>
+                                <div class="admin-field"><label>Title</label><input type="text" data-path="solution.features.${i}.title" value="${esc(f.title)}"></div>
+                            </div>
+                            <div class="admin-field"><label>Description</label><textarea data-path="solution.features.${i}.desc" rows="2">${esc(f.desc)}</textarea></div>
+                        </div>
+                    `).join('')}
+
+                    <div class="admin-divider"></div>
+                    <div class="admin-section-title">Booking Section</div>
+                    <div class="admin-field"><label>Section Label</label><input type="text" data-path="booking.label" value="${esc(s.booking.label)}"></div>
+                    <div class="admin-field"><label>Title</label><input type="text" data-path="booking.title" value="${esc(s.booking.title)}"></div>
+                    <div class="admin-field"><label>Subtitle</label><textarea data-path="booking.subtitle" rows="2">${esc(s.booking.subtitle)}</textarea></div>
+                    <div class="admin-field"><label>Button Text</label><input type="text" data-path="booking.btnText" value="${esc(s.booking.btnText)}"></div>
+                    <div class="admin-field"><label>Note below form</label><input type="text" data-path="booking.note" value="${esc(s.booking.note)}"></div>
+
+                    <div class="admin-divider"></div>
+                    <div class="admin-section-title">Footer</div>
+                    <div class="admin-field"><label>Tagline</label><input type="text" data-path="footer.tagline" value="${esc(s.footer.tagline)}"></div>
+                </div>
+            `;
+        } else if (tab === 'tiers') {
+            body.innerHTML = `
+                <div class="admin-section active">
+                    <div class="admin-section-title">Services Section Header</div>
+                    <div class="admin-field"><label>Label</label><input type="text" data-path="services.label" value="${esc(s.services.label)}"></div>
+                    <div class="admin-field"><label>Title</label><input type="text" data-path="services.title" value="${esc(s.services.title)}"></div>
+                    <div class="admin-field"><label>Subtitle</label><textarea data-path="services.subtitle" rows="2">${esc(s.services.subtitle)}</textarea></div>
+                    <div class="admin-divider"></div>
+                    ${s.services.tiers.map((t, i) => `
+                        <div class="admin-tier-card">
+                            <h4>${t.name}</h4>
+                            <div class="admin-row">
+                                <div class="admin-field"><label>Depth Label</label><input type="text" data-path="services.tiers.${i}.depth" value="${esc(t.depth)}"></div>
+                                <div class="admin-field"><label>Tier Name</label><input type="text" data-path="services.tiers.${i}.name" value="${esc(t.name)}"></div>
+                            </div>
+                            <div class="admin-field"><label>Description</label><textarea data-path="services.tiers.${i}.desc" rows="3">${esc(t.desc)}</textarea></div>
+                            <div class="admin-row">
+                                <div class="admin-field"><label>Price</label><input type="text" data-path="services.tiers.${i}.price" value="${esc(t.price)}"></div>
+                                <div class="admin-field"><label>Price Note</label><input type="text" data-path="services.tiers.${i}.priceNote" value="${esc(t.priceNote)}"></div>
+                            </div>
+                            <div class="admin-field"><label>Button Text</label><input type="text" data-path="services.tiers.${i}.btnText" value="${esc(t.btnText)}"></div>
+                            <div class="admin-field">
+                                <label>Features (one per line)</label>
+                                <textarea data-path="services.tiers.${i}.features" data-type="array" rows="5">${t.features.join('\n')}</textarea>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        } else if (tab === 'design') {
+            body.innerHTML = `
+                <div class="admin-section active">
+                    <div class="admin-section-title">Typography</div>
+                    <div class="admin-field">
+                        <label>Display Font (headings)</label>
+                        <select data-path="settings.fontDisplay">
+                            ${FONT_OPTIONS.display.map(f => `<option value="${f.value}" ${s.settings.fontDisplay === f.value ? 'selected' : ''}>${f.label}</option>`).join('')}
+                        </select>
+                        <div class="font-preview" id="previewDisplay" style="font-family:${s.settings.fontDisplay}">The quick brown fox jumps over the lazy dog</div>
+                    </div>
+                    <div class="admin-field">
+                        <label>Body Font</label>
+                        <select data-path="settings.fontBody">
+                            ${FONT_OPTIONS.body.map(f => `<option value="${f.value}" ${s.settings.fontBody === f.value ? 'selected' : ''}>${f.label}</option>`).join('')}
+                        </select>
+                        <div class="font-preview" id="previewBody" style="font-family:${s.settings.fontBody}">The quick brown fox jumps over the lazy dog</div>
+                    </div>
+
+                    <div class="admin-divider"></div>
+                    <div class="admin-section-title">Colors</div>
+                    <div class="admin-field">
+                        <label>Primary Blue</label>
+                        <div class="admin-color-row">
+                            <input type="color" data-path="settings.colorPrimary" data-sync="colorPrimaryText" value="${s.settings.colorPrimary}">
+                            <input type="text" id="colorPrimaryText" data-path="settings.colorPrimary" value="${s.settings.colorPrimary}">
+                        </div>
+                    </div>
+                    <div class="admin-field">
+                        <label>Accent Blue</label>
+                        <div class="admin-color-row">
+                            <input type="color" data-path="settings.colorAccent" data-sync="colorAccentText" value="${s.settings.colorAccent}">
+                            <input type="text" id="colorAccentText" data-path="settings.colorAccent" value="${s.settings.colorAccent}">
+                        </div>
+                    </div>
+                    <div class="admin-field">
+                        <label>Dark Background</label>
+                        <div class="admin-color-row">
+                            <input type="color" data-path="settings.colorNavy" data-sync="colorNavyText" value="${s.settings.colorNavy}">
+                            <input type="text" id="colorNavyText" data-path="settings.colorNavy" value="${s.settings.colorNavy}">
+                        </div>
+                    </div>
+                    <div class="admin-field">
+                        <label>Text Primary</label>
+                        <div class="admin-color-row">
+                            <input type="color" data-path="settings.colorText" data-sync="colorTextText" value="${s.settings.colorText}">
+                            <input type="text" id="colorTextText" data-path="settings.colorText" value="${s.settings.colorText}">
+                        </div>
+                    </div>
+                    <div class="admin-field">
+                        <label>Text Secondary</label>
+                        <div class="admin-color-row">
+                            <input type="color" data-path="settings.colorTextSecondary" data-sync="colorTextSecText" value="${s.settings.colorTextSecondary}">
+                            <input type="text" id="colorTextSecText" data-path="settings.colorTextSecondary" value="${s.settings.colorTextSecondary}">
+                        </div>
+                    </div>
+
+                    <div class="admin-divider"></div>
+                    <div class="admin-section-title">Security</div>
+                    <div class="admin-field">
+                        <label>Admin Password</label>
+                        <input type="text" data-path="settings.adminPassword" value="${esc(s.settings.adminPassword)}">
+                    </div>
+                </div>
+            `;
+
+            // Sync color pickers with text inputs
+            body.querySelectorAll('input[type="color"]').forEach(picker => {
+                picker.addEventListener('input', (e) => {
+                    const syncId = e.target.dataset.sync;
+                    if (syncId) document.getElementById(syncId).value = e.target.value;
+                });
+            });
+
+            // Sync text inputs with color pickers
+            body.querySelectorAll('.admin-color-row input[type="text"]').forEach(input => {
+                input.addEventListener('input', (e) => {
+                    const row = e.target.closest('.admin-color-row');
+                    const picker = row.querySelector('input[type="color"]');
+                    if (picker && /^#[0-9a-fA-F]{6}$/.test(e.target.value)) {
+                        picker.value = e.target.value;
+                    }
+                });
+            });
+
+            // Font preview updates
+            body.querySelectorAll('select[data-path="settings.fontDisplay"]').forEach(sel => {
+                sel.addEventListener('change', () => {
+                    document.getElementById('previewDisplay').style.fontFamily = sel.value;
+                });
+            });
+            body.querySelectorAll('select[data-path="settings.fontBody"]').forEach(sel => {
+                sel.addEventListener('change', () => {
+                    document.getElementById('previewBody').style.fontFamily = sel.value;
+                });
+            });
+        } else if (tab === 'audience') {
+            body.innerHTML = `
+                <div class="admin-section active">
+                    <div class="admin-section-title">Audience Section Header</div>
+                    <div class="admin-field"><label>Label</label><input type="text" data-path="audience.label" value="${esc(s.audience.label)}"></div>
+                    <div class="admin-field"><label>Title</label><input type="text" data-path="audience.title" value="${esc(s.audience.title)}"></div>
+                    <div class="admin-field"><label>Subtitle</label><textarea data-path="audience.subtitle" rows="2">${esc(s.audience.subtitle)}</textarea></div>
+                    <div class="admin-divider"></div>
+                    <div class="admin-section-title">Audience Cards</div>
+                    ${s.audience.cards.map((c, i) => `
+                        <div class="admin-item-card">
+                            <div class="admin-row">
+                                <div class="admin-field"><label>Icon</label><input type="text" data-path="audience.cards.${i}.icon" value="${esc(c.icon)}"></div>
+                                <div class="admin-field"><label>Title</label><input type="text" data-path="audience.cards.${i}.title" value="${esc(c.title)}"></div>
+                            </div>
+                            <div class="admin-field"><label>Description</label><input type="text" data-path="audience.cards.${i}.desc" value="${esc(c.desc)}"></div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+    }
+
+    // ============================================================
+    // DATA HELPERS
+    // ============================================================
+    function esc(str) {
+        return String(str).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    function setNestedValue(obj, path, value) {
+        const keys = path.split('.');
+        let current = obj;
+        for (let i = 0; i < keys.length - 1; i++) {
+            const key = isNaN(keys[i]) ? keys[i] : parseInt(keys[i]);
+            current = current[key];
+        }
+        const lastKey = isNaN(keys[keys.length-1]) ? keys[keys.length-1] : parseInt(keys[keys.length-1]);
+        current[lastKey] = value;
+    }
+
+    function collectFormData() {
+        document.querySelectorAll('#adminBody [data-path]').forEach(el => {
+            const path = el.dataset.path;
+            let value = el.value;
+            if (el.dataset.type === 'array') {
+                value = value.split('\n').filter(line => line.trim());
+            }
+            setNestedValue(state, path, value);
+        });
+    }
+
+    // ============================================================
+    // ADMIN ACTIONS
+    // ============================================================
+    async function saveAll() {
+        collectFormData();
+        await saveState();
+        renderSite();
+        showSaved();
+    }
+
+    function previewChanges() {
+        collectFormData();
+        renderSite();
+        document.getElementById('adminOverlay').classList.remove('open');
+    }
+
+    async function resetAll() {
+        if (confirm('Reset all content to defaults? This cannot be undone.')) {
+            state = JSON.parse(JSON.stringify(DEFAULTS));
+            await saveState();
+            renderSite();
+            renderAdminTab(currentTab);
+            showSaved();
+        }
+    }
+
+    function showSaved() {
+        const el = document.getElementById('adminSaved');
+        el.classList.add('show');
+        setTimeout(() => el.classList.remove('show'), 2000);
+    }
+
+    // ============================================================
+    // AUTH
+    // ============================================================
+    function attemptLogin() {
+        const input = document.getElementById('adminPassword').value;
+        if (input === state.settings.adminPassword) {
+            document.getElementById('adminLogin').style.display = 'none';
+            document.getElementById('adminContent').style.display = 'block';
+            renderAdminTab('content');
+        } else {
+            document.getElementById('loginError').style.display = 'block';
+        }
+    }
+
+    // ============================================================
+    // INIT
+    // ============================================================
+    function initObservers() {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) entry.target.classList.add('visible');
+            });
+        }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+        document.querySelectorAll('.fade-in, .pain-point').forEach(el => observer.observe(el));
+    }
+
+    // Nav scroll
+    window.addEventListener('scroll', () => {
+        document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    // Particles
+    const particlesContainer = document.getElementById('particles');
+    for (let i = 0; i < 25; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        p.style.left = Math.random() * 100 + '%';
+        p.style.animationDuration = (8 + Math.random() * 12) + 's';
+        p.style.animationDelay = Math.random() * 5 + 's';
+        p.style.width = p.style.height = (2 + Math.random() * 4) + 'px';
+        p.style.opacity = 0.15 + Math.random() * 0.25;
+        particlesContainer.appendChild(p);
+    }
+
+    // Smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    });
+
+    // Form - submit to server
+    window.handleSubmit = async function(e) {
+        e.preventDefault();
+        const btn = e.target.querySelector('.submit-btn');
+        const orig = btn.textContent;
+        btn.textContent = 'Sending...';
+
+        const formData = {
+            name: e.target.querySelector('[name="name"]').value,
+            email: e.target.querySelector('[name="email"]').value,
+            interest: e.target.querySelector('[name="interest"]').value,
+            message: e.target.querySelector('[name="message"]').value,
+        };
+
+        try {
+            await fetch('/api/contact', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            });
+            btn.textContent = 'Message Sent ✓';
+            btn.style.background = '#059669';
+            setTimeout(() => { btn.textContent = orig; btn.style.background = ''; e.target.reset(); e.target.querySelector('select').classList.remove('selected'); }, 3000);
+        } catch(err) {
+            btn.textContent = 'Error — try again';
+            btn.style.background = '#ef4444';
+            setTimeout(() => { btn.textContent = orig; btn.style.background = ''; }, 3000);
+        }
+    };
+
+    // Admin panel toggle
+    document.getElementById('adminToggle').addEventListener('click', () => {
+        document.getElementById('adminOverlay').classList.add('open');
+    });
+    document.getElementById('adminClose').addEventListener('click', () => {
+        document.getElementById('adminOverlay').classList.remove('open');
+    });
+    document.getElementById('adminOverlay').addEventListener('click', (e) => {
+        if (e.target === document.getElementById('adminOverlay')) {
+            document.getElementById('adminOverlay').classList.remove('open');
+        }
+    });
+
+    // Tab switching
+    document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('admin-tab')) {
+            collectFormData(); // save current tab data before switching
+            renderAdminTab(e.target.dataset.tab);
+        }
+    });
+
+    // Boot
+    (async () => {
+        await loadState();
+        renderSite();
+    })();
+    </script>
+
+</body>
+</html>
