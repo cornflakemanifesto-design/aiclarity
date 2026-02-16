@@ -94,6 +94,63 @@
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
         }
 
+        .image-reveal.fade-out {
+            opacity: 0;
+        }
+
+        .welcome-banner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            opacity: 0;
+            transition: opacity 1.2s ease;
+            pointer-events: none;
+        }
+
+        .welcome-banner.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .welcome-banner h1 {
+            font-size: 3rem;
+            font-weight: 300;
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.05em;
+            background: linear-gradient(135deg, #4a9eff 0%, #7bb8ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .welcome-banner p {
+            font-size: 1.3rem;
+            font-weight: 300;
+            color: #b8c5d6;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .proceed-btn {
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-family: 'Georgia', serif;
+            color: #fff;
+            background: linear-gradient(135deg, #4a9eff 0%, #3a7fcf 100%);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(74, 158, 255, 0.3);
+        }
+
+        .proceed-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(74, 158, 255, 0.5);
+        }
+
         .hidden {
             opacity: 0;
             pointer-events: none;
@@ -107,6 +164,15 @@
 
             .no-here {
                 font-size: 1.3rem;
+            }
+
+            .welcome-banner h1 {
+                font-size: 2rem;
+            }
+
+            .welcome-banner p {
+                font-size: 1.1rem;
+                padding: 0 1rem;
             }
         }
     </style>
@@ -122,13 +188,27 @@
         <div class="image-reveal" id="imageReveal">
             <img src="haley.jpg" alt="AI Made This Gag Possible">
         </div>
+
+        <div class="welcome-banner" id="welcomeBanner">
+            <h1>Welcome to AI Clarity</h1>
+            <p>Where artificial intelligence meets human understanding.<br>Let's demystify AI together.</p>
+            <button class="proceed-btn" id="proceedBtn">Enter</button>
+        </div>
     </div>
+
+    <!-- Audio element for "I see dead people" whisper -->
+    <audio id="whisperAudio" preload="auto">
+        <source src="i-c-dead-people.mp3" type="audio/mpeg">
+    </audio>
 
     <script>
         const clickHere = document.getElementById('clickHere');
         const welcomeText = document.getElementById('welcomeText');
         const noHere = document.getElementById('noHere');
         const imageReveal = document.getElementById('imageReveal');
+        const welcomeBanner = document.getElementById('welcomeBanner');
+        const proceedBtn = document.getElementById('proceedBtn');
+        const whisperAudio = document.getElementById('whisperAudio');
 
         // Randomize position of "no, here" so it appears somewhere unexpected
         function randomizePosition() {
@@ -150,19 +230,33 @@
             }, 600);
         });
 
-        // Step 2: Click "no, here" — image fades in, then redirect
+        // Step 2: Click "no, here" — image fades in with whisper, then welcome banner
         noHere.addEventListener('click', function () {
             noHere.classList.add('hidden');
             noHere.classList.remove('visible');
 
+            // Show Haley Joel Osment image
             setTimeout(function () {
                 imageReveal.classList.add('visible');
+
+                // Play "I see dead people" whisper
+                whisperAudio.play().catch(err => console.log('Audio play failed:', err));
             }, 300);
 
-            // Redirect to the main site after showing the image
+            // Fade out image
             setTimeout(function () {
-                window.location.href = '/home';
-            }, 3500);
+                imageReveal.classList.add('fade-out');
+            }, 3000);
+
+            // Show welcome banner
+            setTimeout(function () {
+                welcomeBanner.classList.add('visible');
+            }, 4200);
+        });
+
+        // Proceed button - go to main site
+        proceedBtn.addEventListener('click', function () {
+            window.location.href = '/home';
         });
     </script>
 </body>
