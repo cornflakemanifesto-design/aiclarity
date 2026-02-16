@@ -190,8 +190,7 @@
         </div>
 
         <div class="welcome-banner" id="welcomeBanner">
-            <h1>Welcome to AI Clarity</h1>
-            <p>Where artificial intelligence meets human understanding.<br>Let's demystify AI together.</p>
+            <h1>Your AI Journey Begins Here</h1>
             <button class="proceed-btn" id="proceedBtn">Enter</button>
         </div>
     </div>
@@ -230,28 +229,31 @@
             }, 600);
         });
 
-        // Step 2: Click "no, here" — image fades in with whisper, then welcome banner
+        // Set audio volume to low
+        whisperAudio.volume = 0.3;
+
+        // Step 2: Click "no, here" — image appears, pause, then fades with whisper
         noHere.addEventListener('click', function () {
             noHere.classList.add('hidden');
             noHere.classList.remove('visible');
 
-            // Show Haley Joel Osment image
+            // Show Haley Joel Osment image immediately
             setTimeout(function () {
                 imageReveal.classList.add('visible');
-
-                // Play "I see dead people" whisper
-                whisperAudio.play().catch(err => console.log('Audio play failed:', err));
             }, 300);
 
-            // Fade out image
+            // After viewing pause, start fading image and play whisper
             setTimeout(function () {
                 imageReveal.classList.add('fade-out');
-            }, 3000);
 
-            // Show welcome banner
+                // Play whisper AS image fades
+                whisperAudio.play().catch(err => console.log('Audio play failed:', err));
+            }, 3500);
+
+            // Show "Your AI Journey Begins Here" message
             setTimeout(function () {
                 welcomeBanner.classList.add('visible');
-            }, 4200);
+            }, 5000);
         });
 
         // Proceed button - go to main site
