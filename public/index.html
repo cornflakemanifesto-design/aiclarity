@@ -365,80 +365,17 @@
         .mobile-menu-btn span { width: 24px; height: 2px; background: white; transition: all 0.3s; }
         nav.scrolled .mobile-menu-btn span { background: var(--deep-navy); }
 
-        /* Hero - Underwater Pool Aesthetic (Deeper Water) */
-        .hero { position: relative; min-height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; background: linear-gradient(180deg, #0c4a6e 0%, #075985 20%, #0369a1 45%, #0284c7 70%, #0891b2 100%); overflow: hidden; }
-
-        /* Water caustics light effect */
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background:
-                radial-gradient(ellipse 800px 600px at 30% 20%, rgba(255,255,255,0.08) 0%, transparent 50%),
-                radial-gradient(ellipse 600px 400px at 70% 60%, rgba(56,189,248,0.12) 0%, transparent 50%),
-                radial-gradient(ellipse 500px 500px at 50% 80%, rgba(255,255,255,0.06) 0%, transparent 50%);
-            animation: water-caustics 12s ease-in-out infinite alternate;
-        }
-        @keyframes water-caustics {
-            0% { opacity: 0.7; transform: scale(1) rotate(0deg); }
-            50% { opacity: 1; transform: scale(1.1) rotate(2deg); }
-            100% { opacity: 0.8; transform: scale(0.95) rotate(-1deg); }
-        }
-
-        /* Water surface ripple overlay */
-        .hero::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 120px;
-            background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.06) 50%, transparent 100%);
-            animation: surface-shimmer 8s ease-in-out infinite;
-        }
-        @keyframes surface-shimmer {
-            0%, 100% { opacity: 0.6; }
-            50% { opacity: 0.9; }
-        }
-
-        /* Bubble container */
-        .hero-particles { position: absolute; top: 0; left: 0; right: 0; bottom: 0; overflow: hidden; pointer-events: none; }
-
-        /* Individual bubbles */
-        .particle {
-            position: absolute;
-            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8), rgba(255,255,255,0.3) 40%, rgba(56,189,248,0.2));
-            border-radius: 50%;
-            box-shadow: inset 0 0 10px rgba(255,255,255,0.5), 0 0 10px rgba(255,255,255,0.2);
-            animation: bubble-rise linear infinite;
-        }
-
-        /* Bubble animation - rising from bottom */
-        @keyframes bubble-rise {
-            0% {
-                transform: translateY(100vh) translateX(0) scale(0);
-                opacity: 0;
-            }
-            5% {
-                opacity: 0.6;
-            }
-            10% {
-                transform: translateY(90vh) translateX(10px) scale(1);
-                opacity: 0.8;
-            }
-            50% {
-                transform: translateY(50vh) translateX(-20px) scale(1);
-                opacity: 0.7;
-            }
-            90% {
-                opacity: 0.5;
-            }
-            100% {
-                transform: translateY(-10vh) translateX(15px) scale(0.8);
-                opacity: 0;
-            }
-        }
+        /* Hero */
+        .hero { position: relative; min-height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; background: linear-gradient(165deg, var(--deep-navy) 0%, #0f2847 35%, var(--rich-blue) 65%, #1e5a8a 100%); overflow: hidden; }
+        .hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(ellipse 600px 400px at 20% 80%, rgba(56,189,248,0.08) 0%, transparent 70%), radial-gradient(ellipse 800px 600px at 80% 20%, rgba(37,99,235,0.06) 0%, transparent 70%), radial-gradient(ellipse 400px 300px at 60% 70%, rgba(56,189,248,0.05) 0%, transparent 70%); animation: caustics 8s ease-in-out infinite alternate; }
+        @keyframes caustics { 0% { opacity: 0.6; transform: scale(1); } 50% { opacity: 1; transform: scale(1.05); } 100% { opacity: 0.7; transform: scale(0.98); } }
+        .hero-particles { position: absolute; top: 0; left: 0; right: 0; bottom: 0; overflow: hidden; }
+        .particle { position: absolute; width: 4px; height: 4px; background: rgba(56,189,248,0.3); border-radius: 50%; animation: float-up linear infinite; }
+        @keyframes float-up { 0% { transform: translateY(100vh) scale(0); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { transform: translateY(-10vh) scale(1); opacity: 0; } }
         .hero-content { position: relative; z-index: 2; max-width: 800px; padding: 2rem; }
-        .hero-badge { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1.25rem; background: rgba(56,189,248,0.1); border: 1px solid rgba(56,189,248,0.2); border-radius: 100px; font-size: 0.85rem; font-weight: 500; color: var(--sky-blue); margin-bottom: 2rem; opacity: 0; transform: translateY(20px); animation: fadeUp 0.8s 0.3s cubic-bezier(0.16,1,0.3,1) forwards; }
+        .hero-badge { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1.25rem; background: rgba(56,189,248,0.1); border: 1px solid rgba(56,189,248,0.2); border-radius: 100px; font-size: 0.85rem; font-weight: 500; color: var(--sky-blue); margin-bottom: 2rem; opacity: 0; transform: translateY(20px); animation: fadeUp 0.8s 0.3s cubic-bezier(0.16,1,0.3,1) forwards; position: relative; }
         .hero-badge::before { content: ''; width: 6px; height: 6px; background: var(--sky-blue); border-radius: 50%; animation: pulse-dot 2s ease-in-out infinite; }
+        .easter-egg-placeholder { display: none; }
         @keyframes pulse-dot { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.5); } }
         .hero h1 { font-family: var(--font-display); font-size: clamp(2.8rem,6vw,4.5rem); font-weight: 600; color: var(--white); line-height: 1.15; letter-spacing: -0.02em; margin-bottom: 1.5rem; opacity: 0; transform: translateY(30px); animation: fadeUp 0.8s 0.5s cubic-bezier(0.16,1,0.3,1) forwards; }
         .hero h1 em { font-style: italic; color: var(--sky-blue); }
@@ -525,9 +462,9 @@
         .testimonials { background: var(--crystal); text-align: center; }
         .testimonials-placeholder { max-width: 500px; margin: 3rem auto 0; padding: 3rem; border: 2px dashed var(--light-gray); border-radius: 20px; color: var(--warm-gray); font-style: italic; }
 
-        /* Booking - Deeper Pool Effect */
-        .booking { background: linear-gradient(180deg, #0c4a6e 0%, #075985 50%, #0369a1 100%); text-align: center; position: relative; overflow: hidden; }
-        .booking::before { content: ''; position: absolute; top: -50%; left: -50%; right: -50%; bottom: -50%; background: radial-gradient(ellipse at center, rgba(56,189,248,0.15) 0%, transparent 60%); animation: water-caustics 10s ease-in-out infinite alternate; }
+        /* Booking */
+        .booking { background: linear-gradient(165deg, var(--deep-navy) 0%, var(--rich-blue) 100%); text-align: center; position: relative; overflow: hidden; }
+        .booking::before { content: ''; position: absolute; top: -50%; left: -50%; right: -50%; bottom: -50%; background: radial-gradient(ellipse at center, rgba(56,189,248,0.05) 0%, transparent 60%); animation: caustics 10s ease-in-out infinite alternate; }
         .booking-content { position: relative; z-index: 2; }
         .booking .section-label { color: var(--sky-blue); }
         .booking .section-title { color: white; }
@@ -594,8 +531,13 @@
     <section class="hero" id="hero">
         <div class="hero-particles" id="particles"></div>
         <div class="hero-content">
+            <div class="hero-badge" id="site-hero-badge">Your AI Journey Starts Here</div>
             <h1 id="site-hero-title">We Remove the <em>Fear</em> From the Equation</h1>
             <p class="hero-sub" id="site-hero-sub">You know AI is the future. You've seen what it can do. But every time you try to take that first step, it feels overwhelming. We're here to change that.</p>
+            <div class="hero-actions">
+                <a href="#booking" class="btn-primary" id="site-hero-cta">Start With a Conversation <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+                <a href="#services" class="btn-secondary">See How It Works</a>
+            </div>
         </div>
         <div class="scroll-indicator"><span>Scroll</span><div class="scroll-line"></div></div>
     </section>
@@ -1314,30 +1256,17 @@
         document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
     });
 
-    // Pool Bubbles - varied sizes for realistic effect
+    // Particles
     const particlesContainer = document.getElementById('particles');
-    for (let i = 0; i < 30; i++) {
-        const bubble = document.createElement('div');
-        bubble.className = 'particle';
-
-        // Random horizontal position
-        bubble.style.left = Math.random() * 100 + '%';
-
-        // Varied bubble sizes (small to large)
-        const size = 8 + Math.random() * 25; // 8px to 33px
-        bubble.style.width = bubble.style.height = size + 'px';
-
-        // Slower rise for larger bubbles, faster for smaller
-        const duration = 12 + Math.random() * 15; // 12s to 27s
-        bubble.style.animationDuration = duration + 's';
-
-        // Staggered start times
-        bubble.style.animationDelay = Math.random() * 8 + 's';
-
-        // Varied opacity - more visible larger bubbles
-        bubble.style.opacity = 0.3 + Math.random() * 0.4;
-
-        particlesContainer.appendChild(bubble);
+    for (let i = 0; i < 25; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        p.style.left = Math.random() * 100 + '%';
+        p.style.animationDuration = (8 + Math.random() * 12) + 's';
+        p.style.animationDelay = Math.random() * 5 + 's';
+        p.style.width = p.style.height = (2 + Math.random() * 4) + 'px';
+        p.style.opacity = 0.15 + Math.random() * 0.25;
+        particlesContainer.appendChild(p);
     }
 
     // Smooth scroll

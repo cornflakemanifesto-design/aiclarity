@@ -7,7 +7,7 @@ const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public'), { index: false }));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Data file path for CMS content persistence
 const DATA_FILE = path.join(__dirname, 'data', 'content.json');
@@ -78,16 +78,17 @@ app.get('/api/contacts', (req, res) => {
     }
 });
 
-// Serve the landing page Easter egg at root
+// Serve landing page at root
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'landing.html'));
 });
 
-// Serve the main site at /home and as fallback
+// Serve the main site at /home
 app.get('/home', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+// Catch-all for other routes
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });

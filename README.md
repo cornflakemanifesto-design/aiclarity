@@ -37,21 +37,13 @@ Change this in the admin panel under **Design → Security**.
 - `POST /api/contact` — Submit contact form
 - `GET /api/contacts` — Get contact submissions (for admin)
 
-## Features
-
-### Easter Egg Landing Page
-
-The root URL (`/`) displays an interactive landing page with a playful "click here" experience that reveals a surprise before redirecting to the main site at `/home`.
-
 ## Project Structure
 
 ```
 ├── server.js          # Express server + API routes
 ├── package.json
 ├── public/
-│   ├── index.html     # Full site + admin CMS
-│   ├── landing.html   # Easter egg landing page
-│   └── haley.jpg      # Easter egg reveal image
+│   └── index.html     # Full site + admin CMS
 ├── data/              # Auto-created, stores JSON data
 │   ├── content.json   # CMS content (gitignored)
 │   └── contacts.json  # Form submissions (gitignored)

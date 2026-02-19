@@ -4,262 +4,456 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Clarity</title>
+    <meta name="description" content="AI Clarity — Your AI journey starts here.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; }
 
         body {
-            min-height: 100vh;
+            font-family: 'DM Sans', -apple-system, sans-serif;
+            background: linear-gradient(165deg, #0a1628 0%, #0f2847 35%, #1a3a5c 65%, #1e5a8a 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #0a1628;
-            font-family: 'Georgia', serif;
-            color: #fff;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Caustics background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse 600px 400px at 20% 80%, rgba(56,189,248,0.08) 0%, transparent 70%),
+                radial-gradient(ellipse 800px 600px at 80% 20%, rgba(37,99,235,0.06) 0%, transparent 70%),
+                radial-gradient(ellipse 400px 300px at 60% 70%, rgba(56,189,248,0.05) 0%, transparent 70%);
+            animation: caustics 8s ease-in-out infinite alternate;
+            pointer-events: none;
+        }
+
+        @keyframes caustics {
+            0% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+            100% { opacity: 0.7; transform: scale(0.98); }
+        }
+
+        /* Floating particles */
+        .particles {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
             overflow: hidden;
         }
 
-        .container {
-            text-align: center;
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(56,189,248,0.3);
+            border-radius: 50%;
+            animation: float-up linear infinite;
+        }
+
+        @keyframes float-up {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+        }
+
+        /* Main content */
+        .landing-content {
             position: relative;
-            width: 100vw;
-            height: 100vh;
+            z-index: 2;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2.5rem;
+        }
+
+        /* Logo */
+        .landing-logo {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 600;
+            color: white;
+            letter-spacing: -0.02em;
+            opacity: 0;
+            animation: fadeIn 1s 0.2s ease forwards;
+        }
+
+        .landing-logo span {
+            font-weight: 400;
+            opacity: 0.6;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        /* Badge - the star of the show */
+        .landing-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 1rem 2.5rem;
+            background: rgba(56,189,248,0.08);
+            border: 1px solid rgba(56,189,248,0.2);
+            border-radius: 100px;
+            font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+            font-weight: 500;
+            color: #38bdf8;
+            position: relative;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeUp 0.8s 0.6s cubic-bezier(0.16,1,0.3,1) forwards;
+        }
+
+        .landing-badge::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: #38bdf8;
+            border-radius: 50%;
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.5); }
+        }
+
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* The "Here" trigger */
+        .here-trigger {
+            color: #38bdf8;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .here-trigger:hover {
+            color: #7dd3fc;
+        }
+
+        /* The "No, here." button */
+        .no-here-btn {
+            display: none;
+            position: absolute;
+            left: calc(100% + 20px);
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 1rem 2.5rem;
+            background: rgba(56,189,248,0.08);
+            border: 1px solid rgba(56,189,248,0.2);
+            border-radius: 100px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+            font-weight: 600;
+            color: #38bdf8;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .no-here-btn:hover {
+            color: #7dd3fc;
+            background: rgba(56,189,248,0.15);
+            border-color: rgba(56,189,248,0.35);
+        }
+
+        .no-here-btn.show {
+            display: inline-flex;
+            animation: popIn 0.35s cubic-bezier(0.16,1,0.3,1) forwards;
+        }
+
+        @keyframes popIn {
+            0% { opacity: 0; transform: translateY(-50%) translateX(15px) scale(0.95); }
+            100% { opacity: 1; transform: translateY(-50%) translateX(0) scale(1); }
+        }
+
+        /* Gag image reveal */
+        .gag-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(10,22,40,0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-
-        .welcome-text {
-            font-size: 2rem;
-            font-weight: 300;
-            letter-spacing: 0.02em;
-            transition: opacity 0.6s ease;
-        }
-
-        .welcome-text .click-here {
-            color: #4a9eff;
-            cursor: pointer;
-            text-decoration: underline;
-            text-underline-offset: 4px;
-            transition: color 0.3s ease;
-        }
-
-        .welcome-text .click-here:hover {
-            color: #7bb8ff;
-        }
-
-        .no-here {
-            position: absolute;
-            font-size: 1.8rem;
-            font-weight: 300;
-            color: #4a9eff;
-            cursor: pointer;
-            text-decoration: underline;
-            text-underline-offset: 4px;
+            z-index: 100;
             opacity: 0;
-            transition: opacity 0.8s ease, color 0.3s ease;
             pointer-events: none;
+            transition: opacity 0.8s ease;
         }
 
-        .no-here:hover {
-            color: #7bb8ff;
-        }
-
-        .no-here.visible {
+        .gag-overlay.show {
             opacity: 1;
-            pointer-events: auto;
+            pointer-events: all;
         }
 
-        .image-reveal {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            opacity: 0;
-            transition: opacity 1s ease;
-            pointer-events: none;
-        }
-
-        .image-reveal.visible {
-            opacity: 1;
-        }
-
-        .image-reveal img {
-            max-width: 90vw;
-            max-height: 80vh;
-            border-radius: 12px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-        }
-
-        .image-reveal.fade-out {
-            opacity: 0;
-        }
-
-        .welcome-banner {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+        .gag-card {
             text-align: center;
-            opacity: 0;
-            transition: opacity 1.2s ease;
-            pointer-events: none;
+            max-width: 480px;
+            padding: 2rem;
+            transform: scale(0.85) translateY(30px);
+            transition: transform 0.8s cubic-bezier(0.16,1,0.3,1);
         }
 
-        .welcome-banner.visible {
-            opacity: 1;
-            pointer-events: auto;
+        .gag-overlay.show .gag-card {
+            transform: scale(1) translateY(0);
         }
 
-        .welcome-banner h1 {
+        /* ============================================
+           PLACEHOLDER IMAGE CONTAINER
+           Replace the placeholder with your actual image.
+           
+           Option A: Drop an image file in /public/images/gag.jpg
+                     and change the src of #gagImage below.
+           
+           Option B: Use any image URL as the src.
+           ============================================ */
+        .gag-image {
+            max-width: 360px;
+            width: 100%;
+            height: auto;
+            border-radius: 20px;
+            border: 2px solid rgba(56,189,248,0.2);
+            margin-bottom: 1.75rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        }
+
+        /* Placeholder shown when no image is set */
+        .gag-placeholder {
+            width: 360px;
+            max-width: 100%;
+            height: 300px;
+            border-radius: 20px;
+            border: 2px dashed rgba(56,189,248,0.3);
+            margin: 0 auto 1.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 0.75rem;
+            background: rgba(56,189,248,0.04);
+        }
+
+        .gag-placeholder-icon {
             font-size: 3rem;
-            font-weight: 300;
-            margin-bottom: 1.5rem;
-            letter-spacing: 0.05em;
-            background: linear-gradient(135deg, #4a9eff 0%, #7bb8ff 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
         }
 
-        .welcome-banner p {
-            font-size: 1.3rem;
-            font-weight: 300;
-            color: #b8c5d6;
-            margin-bottom: 2rem;
+        .gag-placeholder-text {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.3);
+            text-align: center;
+            padding: 0 2rem;
+            line-height: 1.5;
+        }
+
+        .gag-caption {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1.2rem, 3vw, 1.5rem);
+            font-style: italic;
+            font-weight: 500;
+            color: #38bdf8;
+            margin-bottom: 1.25rem;
+        }
+
+        .gag-sub {
+            font-size: 0.95rem;
+            color: rgba(255,255,255,0.5);
             line-height: 1.6;
+            margin-bottom: 0.75rem;
         }
 
-        .proceed-btn {
-            padding: 1rem 2.5rem;
-            font-size: 1.1rem;
-            font-family: 'Georgia', serif;
-            color: #fff;
-            background: linear-gradient(135deg, #4a9eff 0%, #3a7fcf 100%);
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.3s ease;
-            box-shadow: 0 4px 15px rgba(74, 158, 255, 0.3);
+        /* Redirect countdown */
+        .redirect-bar {
+            display: none;
+            margin-top: 1.5rem;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
         }
 
-        .proceed-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(74, 158, 255, 0.5);
+        .redirect-bar.show {
+            display: flex;
         }
 
-        .hidden {
-            opacity: 0;
-            pointer-events: none;
+        .redirect-text {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.35);
+            letter-spacing: 0.05em;
         }
 
-        @media (max-width: 600px) {
-            .welcome-text {
-                font-size: 1.4rem;
-                padding: 0 1.5rem;
+        .redirect-progress {
+            width: 200px;
+            height: 3px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .redirect-progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #2563eb, #38bdf8);
+            border-radius: 10px;
+            transition: width 0.1s linear;
+        }
+
+        .skip-link {
+            font-size: 0.8rem;
+            color: rgba(56,189,248,0.6);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .skip-link:hover {
+            color: #38bdf8;
+        }
+
+        /* Mobile adjustments */
+        @media (max-width: 768px) {
+            .no-here-btn {
+                left: 50%;
+                top: calc(100% + 15px);
+                transform: translateX(-50%);
             }
 
-            .no-here {
-                font-size: 1.3rem;
+            .no-here-btn.show {
+                animation: popInMobile 0.35s cubic-bezier(0.16,1,0.3,1) forwards;
             }
 
-            .welcome-banner h1 {
-                font-size: 2rem;
-            }
-
-            .welcome-banner p {
-                font-size: 1.1rem;
-                padding: 0 1rem;
+            @keyframes popInMobile {
+                0% { opacity: 0; transform: translateX(-50%) translateY(10px) scale(0.95); }
+                100% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <p class="welcome-text" id="welcomeText">
-            Welcome to AI Clarity. Click <span class="click-here" id="clickHere">here</span> to begin.
-        </p>
 
-        <span class="no-here" id="noHere">no, here</span>
+    <div class="particles" id="particles"></div>
 
-        <div class="image-reveal" id="imageReveal">
-            <img src="haley.jpg" alt="AI Made This Gag Possible">
-        </div>
+    <div class="landing-content">
+        <div class="landing-logo">AI <span>Clarity</span></div>
 
-        <div class="welcome-banner" id="welcomeBanner">
-            <h1>Your AI Journey Begins Here</h1>
-            <button class="proceed-btn" id="proceedBtn">Enter</button>
+        <div class="landing-badge">
+            Your AI Journey Starts <span class="here-trigger" id="hereTrigger">Here</span>
+            <button class="no-here-btn" id="noHereBtn">No, here.</button>
         </div>
     </div>
 
-    <!-- Audio element for "I see dead people" whisper -->
-    <audio id="whisperAudio" preload="auto">
-        <source src="i-c-dead-people.mp3" type="audio/mpeg">
-    </audio>
+    <!-- Gag overlay -->
+    <div class="gag-overlay" id="gagOverlay">
+        <div class="gag-card">
+
+            <!-- =============================================
+                 SWAP YOUR IMAGE HERE
+                 
+                 Replace the .gag-placeholder div below with:
+                 <img class="gag-image" src="images/your-image.jpg" alt="AI made this gag possible">
+                 
+                 To use it:
+                 1. Create a folder: public/images/
+                 2. Drop your image in there
+                 3. Delete the .gag-placeholder div
+                 4. Uncomment the img tag below
+                 ============================================= -->
+            
+            <!-- <img class="gag-image" id="gagImage" src="images/gag.jpg" alt="AI made this gag possible"> -->
+            
+            <div class="gag-placeholder" id="gagPlaceholder">
+                <div class="gag-placeholder-icon">🖼️</div>
+                <div class="gag-placeholder-text">Your image goes here.<br>See the HTML comments for instructions.</div>
+            </div>
+
+            <div class="gag-caption">"AI made this gag possible"</div>
+            <p class="gag-sub">Welcome to AI Clarity.</p>
+
+            <div class="redirect-bar" id="redirectBar">
+                <div class="redirect-text">Taking you to the main site...</div>
+                <div class="redirect-progress">
+                    <div class="redirect-progress-bar" id="progressBar"></div>
+                </div>
+                <a href="/home" class="skip-link">Skip ahead →</a>
+            </div>
+        </div>
+    </div>
 
     <script>
-        const clickHere = document.getElementById('clickHere');
-        const welcomeText = document.getElementById('welcomeText');
-        const noHere = document.getElementById('noHere');
-        const imageReveal = document.getElementById('imageReveal');
-        const welcomeBanner = document.getElementById('welcomeBanner');
-        const proceedBtn = document.getElementById('proceedBtn');
-        const whisperAudio = document.getElementById('whisperAudio');
-
-        // Randomize position of "no, here" so it appears somewhere unexpected
-        function randomizePosition() {
-            const padding = 80;
-            const x = padding + Math.random() * (window.innerWidth - padding * 2);
-            const y = padding + Math.random() * (window.innerHeight - padding * 2);
-            noHere.style.left = x + 'px';
-            noHere.style.top = y + 'px';
+        // Particles
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 30; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            p.style.left = Math.random() * 100 + '%';
+            p.style.animationDuration = (8 + Math.random() * 12) + 's';
+            p.style.animationDelay = Math.random() * 5 + 's';
+            p.style.width = p.style.height = (2 + Math.random() * 4) + 'px';
+            p.style.opacity = 0.15 + Math.random() * 0.25;
+            particlesContainer.appendChild(p);
         }
 
-        randomizePosition();
+        // Easter egg flow
+        const hereTrigger = document.getElementById('hereTrigger');
+        const noHereBtn = document.getElementById('noHereBtn');
+        const gagOverlay = document.getElementById('gagOverlay');
+        const redirectBar = document.getElementById('redirectBar');
+        const progressBar = document.getElementById('progressBar');
 
-        // Step 1: Click "here" — it disappears, "no, here" fades in
-        clickHere.addEventListener('click', function () {
-            welcomeText.classList.add('hidden');
+        // How long to show the gag before redirect (in seconds)
+        const REDIRECT_DELAY = 5;
 
-            setTimeout(function () {
-                noHere.classList.add('visible');
-            }, 600);
+        // Step 1: Hover "Here" → it disappears, "No, here." pops up
+        hereTrigger.addEventListener('mouseover', function() {
+            this.style.display = 'none';
+            noHereBtn.classList.add('show');
         });
 
-        // Set audio volume to low
-        whisperAudio.volume = 0.3;
+        // Step 2: Click "No, here." → show the gag
+        noHereBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            gagOverlay.classList.add('show');
 
-        // Step 2: Click "no, here" — image appears, pause, then fades with whisper
-        noHere.addEventListener('click', function () {
-            noHere.classList.add('hidden');
-            noHere.classList.remove('visible');
-
-            // Show Haley Joel Osment image immediately
-            setTimeout(function () {
-                imageReveal.classList.add('visible');
-            }, 300);
-
-            // After viewing pause, start fading image and play whisper
-            setTimeout(function () {
-                imageReveal.classList.add('fade-out');
-
-                // Play whisper AS image fades
-                whisperAudio.play().catch(err => console.log('Audio play failed:', err));
-            }, 3500);
-
-            // Show "Your AI Journey Begins Here" message
-            setTimeout(function () {
-                welcomeBanner.classList.add('visible');
-            }, 5000);
+            // Start redirect countdown after a brief pause
+            setTimeout(function() {
+                redirectBar.classList.add('show');
+                startRedirectCountdown();
+            }, 1000);
         });
 
-        // Proceed button - go to main site
-        proceedBtn.addEventListener('click', function () {
-            window.location.href = '/home';
-        });
+        // Step 3: Countdown + redirect
+        function startRedirectCountdown() {
+            let elapsed = 0;
+            const interval = 50; // update every 50ms for smooth bar
+            const total = REDIRECT_DELAY * 1000;
+
+            const timer = setInterval(function() {
+                elapsed += interval;
+                const pct = Math.min((elapsed / total) * 100, 100);
+                progressBar.style.width = pct + '%';
+
+                if (elapsed >= total) {
+                    clearInterval(timer);
+                    window.location.href = '/home';
+                }
+            }, interval);
+        }
     </script>
+
 </body>
 </html>
